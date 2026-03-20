@@ -382,15 +382,24 @@ func TestDistributedCircuitBreakerTimeSynchronization(t *testing.T) {
 	// Verify that the age calculation is consistent
 	// The age should be based on the shared start time, not individual instance start times
 	now := time.Now()
-	expectedAge := uint64(now.Sub(originalStart) / (2 * time.Second))
+	expectedAge := now.Sub(originalStart) / (2 * time.Second)
+	if expectedAge < 0 {
+		expectedAge = 0
+	}
+
+	var expectedAgeAsUint64 uint64
+	if expectedAge > 0 {
+		expectedAgeAsUint64 = uint64(expectedAge)
+	}
+
+	var minAge uint64
+	if expectedAgeAsUint64 > 0 {
+		minAge = expectedAgeAsUint64 - 1
+	}
 
 	// Allow for small time differences due to test execution
-	var minAge uint64
-	if expectedAge > 0 {
-		minAge = expectedAge - 1
-	}
-	assert.True(t, state1.Age >= minAge && state1.Age <= expectedAge+1,
-		"Age should be calculated from shared start time, got %d, expected around %d", state1.Age, expectedAge)
+	assert.True(t, state1.Age >= minAge && state1.Age <= expectedAgeAsUint64+1,
+		"Age should be calculated from shared start time, got %d, expected around %d", state1.Age, expectedAgeAsUint64)
 }
 
 func TestDistributedCircuitBreakerBucketIndexingConsistency(t *testing.T) {
@@ -461,7 +470,12 @@ func TestDistributedCircuitBreakerBucketIndexingConsistency(t *testing.T) {
 
 	// Verify that the age is calculated from the shared start time
 	now := time.Now()
-	expectedAge := uint64(now.Sub(sharedStart) / (2 * time.Second))
-	assert.True(t, state1.Age >= expectedAge-1 && state1.Age <= expectedAge+1,
+	expectedAge := now.Sub(sharedStart) / (2 * time.Second)
+	if expectedAge < 0 {
+		expectedAge = 0
+	}
+	// #nosec G115
+	expectedAgeInt := uint64(expectedAge)
+	assert.True(t, state1.Age >= expectedAgeInt-1 && state1.Age <= expectedAgeInt+1,
 		"Age should be calculated from shared start time")
 }

@@ -7,10 +7,10 @@ import (
 	"time"
 
 	"github.com/alicebob/miniredis/v2"
+	"github.com/dominicnunez/worldbreaker"
 	"github.com/go-redsync/redsync/v4"
 	"github.com/go-redsync/redsync/v4/redis/goredis/v9"
 	"github.com/redis/go-redis/v9"
-	"github.com/sony/gobreaker/v2"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -42,9 +42,6 @@ func TestNewRedisStore(t *testing.T) {
 
 	store := NewStore(mr.Addr())
 	assert.NotNil(t, store)
-
-	// Test that it implements the interface
-	var _ gobreaker.SharedDataStore = store
 }
 
 func TestNewRedisStoreFromClient(t *testing.T) {
@@ -58,9 +55,6 @@ func TestNewRedisStoreFromClient(t *testing.T) {
 
 	store := NewStoreFromClient(client)
 	assert.NotNil(t, store)
-
-	// Test that it implements the interface
-	var _ gobreaker.SharedDataStore = store
 }
 
 func TestRedisStore_SetData_GetData(t *testing.T) {

@@ -1,15 +1,17 @@
 gobreaker
 =========
 
-[![GoDoc](https://godoc.org/github.com/sony/gobreaker/v2?status.svg)](https://godoc.org/github.com/sony/gobreaker/v2)
+[![pkg.go.dev](https://pkg.go.dev/badge/github.com/dominicnunez/worldbreaker.svg)](https://pkg.go.dev/github.com/dominicnunez/worldbreaker)
 
 [gobreaker][repo-url] implements the [Circuit Breaker pattern](https://msdn.microsoft.com/en-us/library/dn589784.aspx) in Go.
+
+This repository now publishes the v2 API at `github.com/dominicnunez/worldbreaker`.
 
 Installation
 ------------
 
 ```
-go get github.com/sony/gobreaker/v2
+go get github.com/dominicnunez/worldbreaker
 ```
 
 Usage
@@ -131,14 +133,14 @@ func Get(url string) ([]byte, error) {
 }
 ```
 
-See [example](https://github.com/sony/gobreaker/blob/master/v2/example) for details.
+See [example](./example) for details.
 
 License
 -------
 
 The MIT License (MIT)
 
-See [LICENSE](https://github.com/sony/gobreaker/blob/master/LICENSE) for details.
+See [LICENSE](./LICENSE) for details.
 
 
-[repo-url]: https://github.com/sony/gobreaker
+[repo-url]: https://github.com/dominicnunez/worldbreaker

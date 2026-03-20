@@ -5,10 +5,10 @@ import (
 	"errors"
 	"time"
 
+	"github.com/dominicnunez/worldbreaker"
 	"github.com/go-redsync/redsync/v4"
 	"github.com/go-redsync/redsync/v4/redis/goredis/v9"
 	"github.com/redis/go-redis/v9"
-	"github.com/sony/gobreaker/v2"
 )
 
 type Store struct {
@@ -72,5 +72,5 @@ func (rs *Store) SetData(name string, data []byte) error {
 }
 
 func (rs *Store) Close() {
-	rs.client.Close()
+	_ = rs.client.Close()
 }

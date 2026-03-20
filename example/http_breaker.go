@@ -2,14 +2,14 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 
-	"github.com/sony/gobreaker"
+	"github.com/dominicnunez/worldbreaker"
 )
 
-var cb *gobreaker.CircuitBreaker
+var cb *gobreaker.CircuitBreaker[[]byte]
 
 func init() {
 	var st gobreaker.Settings
@@ -19,25 +19,28 @@ func init() {
 		return counts.Requests >= 3 && failureRatio >= 0.6
 	}
 
-	cb = gobreaker.NewCircuitBreaker(st)
+	cb = gobreaker.NewCircuitBreaker[[]byte](st)
 }
 
 // Get wraps http.Get in CircuitBreaker.
 func Get(url string) ([]byte, error) {
-	body, err := cb.Execute(func() (interface{}, error) {
+	body, err := cb.Execute(func() ([]byte, error) {
+		// #nosec G107
 		resp, err := http.Get(url)
 		if err != nil {
 			return nil, err
 		}
 
-		defer resp.Body.Close()
-		return ioutil.ReadAll(resp.Body)
+		defer func() {
+			_ = resp.Body.Close()
+		}()
+		return io.ReadAll(resp.Body)
 	})
 	if err != nil {
 		return nil, err
 	}
 
-	return body.([]byte), nil
+	return body, nil
 }
 
 func main() {

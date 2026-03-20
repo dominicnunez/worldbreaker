@@ -8,7 +8,7 @@ jobs:
       matrix:
         go-version: [1.24.x, 1.25.x]
         os: [ubuntu-latest]
-        work-dir: ["./", "./v2"]
+        work-dir: ["./", "./redis"]
     runs-on: ${{matrix.os}}
     defaults:
       run:
@@ -27,4 +27,5 @@ jobs:
     - name: go test
       run: go test -v ./...
     - name: Run example
+      if: matrix.work-dir == './'
       run: cd example && go build -o http_breaker && ./http_breaker
